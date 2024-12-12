@@ -1,0 +1,443 @@
+@extends('layout')
+@section('content')
+<div class="content-wrapper">
+<!-- Content Header (Page header) -->
+<section class="content-header">
+  <h1 style="text-transform: uppercase;">    
+    Quản lý đặt xe Đà Nẵng  
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+    <li><a href="{{ route( 'booking-car-dn.index') }}">
+     Đặt xe</a></li>
+    <li class="active">Danh sách</li>
+  </ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+  <div class="row">
+
+    <div class="col-md-12">      
+      @if(Session::has('message'))
+      <p class="alert alert-info" >{{ Session::get('message') }}</p>
+      @endif
+      <a href="{{ route('booking-car-dn.create') }}" class="btn btn-info btn-sm" style="margin-bottom:5px">Tạo mới</a>
+      <a href="{{ route('drivers.create') }}?back_url={{ urlencode(Request::fullUrl()) }}" class="btn btn-primary btn-sm" style="margin-bottom:5px">Thêm đối tác xe</a>
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Bộ lọc</h3>
+        </div>
+        <div class="panel-body">
+          <form class="form-inline" role="form" method="GET" action="{{ route('booking-car-dn.index') }}" id="searchForm">
+            <div class="form-group">
+              <input type="text" class="form-control" autocomplete="off" name="id_search" placeholder="PTX ID" value="{{ $arrSearch['id_search'] }}" style="width: 70px">
+            </div>
+            <div class="form-group">
+              <select class="form-control select2" name="driver_id" id="driver_id">
+                <option value="">--Đối tác xe--</option>
+                @foreach($driverList as $driver)
+                <option value="{{ $driver->id }}" {{ $arrSearch['driver_id'] == $driver->id  ? "selected" : "" }}>{{ $driver->name }}</option>
+                @endforeach
+              </select>
+            </div>
+            <div class="form-group">
+              <select class="form-control" name="tour_id" id="tour_id">
+                <option value="">--Loại xe--</option>
+                @foreach($carCate as $cate)
+                <option value="{{ $cate->id }}" {{ $arrSearch['tour_id'] == $cate->id  ? "selected" : "" }}>{{ $cate->name }}</option>
+                @endforeach
+              </select>
+            </div>
+
+            <div class="form-group">              
+              <select class="form-control" name="time_type" id="time_type">                  
+                <option value="">--Thời gian--</option>
+                <option value="1" {{ $time_type == 1 ? "selected" : "" }}>Theo tháng</option>
+                <option value="2" {{ $time_type == 2 ? "selected" : "" }}>Khoảng ngày</option>
+                <option value="3" {{ $time_type == 3 ? "selected" : "" }}>Ngày cụ thể </option>
+              </select>
+            </div> 
+            @if($time_type == 1)
+            <div class="form-group  chon-thang">                
+                <select class="form-control" id="month_change" name="month">
+                  <option value="">--THÁNG--</option>
+                  @for($i = 1; $i <=12; $i++)
+                  <option value="{{ str_pad($i, 2, "0", STR_PAD_LEFT) }}" {{ $month == $i ? "selected" : "" }}>{{ str_pad($i, 2, "0", STR_PAD_LEFT) }}</option>
+                  @endfor
+                </select>
+              </div>
+              <div class="form-group chon-thang">                
+                <select class="form-control" id="year_change" name="year">
+                  <option value="">--Năm--</option>
+                  <option value="2020" {{ $year == 2020 ? "selected" : "" }}>2020</option>
+                  <option value="2021" {{ $year == 2021 ? "selected" : "" }}>2021</option>
+                  <option value="2022" {{ $year == 2022 ? "selected" : "" }}>2022</option>
+                </select>
+              </div>
+            @endif
+            @if($time_type == 2 || $time_type == 3)            
+            <div class="form-group chon-ngay">              
+              <input type="text" class="form-control datepicker" autocomplete="off" name="use_date_from" placeholder="@if($time_type == 2) Từ ngày @else Ngày @endif " value="{{ $arrSearch['use_date_from'] }}" style="width: 100px">
+            </div>
+           
+            @if($time_type == 2)
+            <div class="form-group chon-ngay den-ngay">              
+              <input type="text" class="form-control datepicker" autocomplete="off" name="use_date_to" placeholder="Đến ngày" value="{{ $arrSearch['use_date_to'] }}" style="width: 100px">
+            </div>
+             @endif
+            @endif            
+            @if(Auth::user()->role == 1)
+            <div class="form-group">
+              <select class="form-control select2" name="user_id" id="user_id">
+                <option value="">--Sales--</option>
+                @foreach($listUser as $user)
+                <option value="{{ $user->id }}" {{ $arrSearch['user_id'] == $user->id ? "selected" : "" }}>{{ $user->name }}</option>
+                @endforeach
+              </select>
+            </div>                     
+            @endif 
+            <div class="form-group">
+              <select class="form-control select2" name="nguoi_thu_coc" id="nguoi_thu_coc">
+                <option value="">--Người thu cọc--</option>
+                <option value="1" {{ $arrSearch['nguoi_thu_coc'] == 1 ? "selected" : "" }}>Sales</option>
+                <option value="2" {{ $arrSearch['nguoi_thu_coc'] == 2 ? "selected" : "" }}>CTY</option>
+                <option value="3" {{ $arrSearch['nguoi_thu_coc'] == 3 ? "selected" : "" }}>HDV</option>
+              </select>
+            </div> 
+            <div class="form-group">
+              <select class="form-control select2" name="nguoi_thu_tien" id="nguoi_thu_tien">
+                <option value="">--Người thu tiền--</option>
+                <option value="1" {{ $arrSearch['nguoi_thu_tien'] == 1 ? "selected" : "" }}>Sales</option>
+                <option value="2" {{ $arrSearch['nguoi_thu_tien'] == 2 ? "selected" : "" }}>CTY</option>
+                <option value="3" {{ $arrSearch['nguoi_thu_tien'] == 3 ? "selected" : "" }}>HDV</option>
+                <option value="4" {{ $arrSearch['nguoi_thu_tien'] == 4 ? "selected" : "" }}>Công nợ</option>
+              </select>
+            </div> 
+            <div class="form-group">
+              <input type="text" class="form-control" name="phone" value="{{ $arrSearch['phone'] }}" placeholder="Số ĐT"  style="width: 100px">
+            </div>
+            <button type="submit" class="btn btn-info btn-sm" style="margin-top: -5px">Lọc</button>         
+            <div>
+              <div class="form-group">
+                <input type="checkbox" name="status[]" id="status_1" {{ in_array(1, $arrSearch['status']) ? "checked" : "" }} value="1">
+                <label for="status_1">Mới</label>
+              </div>   
+              <div class="form-group">
+                &nbsp;&nbsp;&nbsp;<input type="checkbox" name="status[]" id="status_2" {{ in_array(2, $arrSearch['status']) ? "checked" : "" }} value="2">
+                <label for="status_2">Hoàn Tất</label>
+              </div>   
+              <div class="form-group" style="border-right: 1px solid #9ba39d">
+                &nbsp;&nbsp;&nbsp;<input type="checkbox" name="status[]" id="status_3" {{ in_array(3, $arrSearch['status']) ? "checked" : "" }} value="3">
+                <label for="status_3">Huỷ&nbsp;&nbsp;&nbsp;&nbsp;</label>
+              </div>  
+              <div class="form-group" style="border-right: 1px solid #9ba39d">
+                &nbsp;&nbsp;&nbsp;<input type="checkbox" name="no_driver" id="no_driver" {{ $arrSearch['no_driver'] == 1 ? "checked" : "" }} value="1">
+                  <label for="no_driver">CHƯA CHỌN ĐỐI TÁC XE&nbsp;&nbsp;&nbsp;&nbsp;</label>
+              </div>
+           
+            </div>
+          </form>         
+        </div>
+      </div>      
+       
+      <div class="box">
+       <div style="background-color: #dbdbd5" class="table-responsive">
+          <table class="table table-bordered" id="table_report">
+              <tr>
+                <th class="text-center">Số chuyến</th>
+                <th class="text-right">Tổng tiền</th>
+                <th class="text-right">CTY thu</th>
+                <th class="text-right">ĐT thu</th>
+                <th class="text-right">Sales thu</th>
+                
+              </tr>
+              <tr>
+                <td class="text-center" style="vertical-align: middle;">{{ number_format($t_chuyen) }}</td> 
+                <td class="text-right" style="vertical-align: middle;">{{ number_format($t_tong ) }}</td>
+                <td class="text-right" style="vertical-align: middle;">{{ number_format($t_cty ) }}</td>
+                <td class="text-right" style="vertical-align: middle;">{{ number_format($t_tx ) }}</td>
+                <td class="text-right" style="vertical-align: middle;">{{ number_format($t_sales ) }}</td>
+              </tr>
+          </table>
+         
+        </div>
+        
+
+        <!-- /.box-header -->
+        <div class="box-body">
+          <div style="text-align:center">
+            {{ $items->appends( $arrSearch )->links() }}
+          </div>  
+          <div class="table-responsive">
+          <table class="table table-bordered" id="table-list-data">
+            <tr>
+              <th style="width: 1%">#</th>
+              <th width="200">Tên KH</th>
+              <th class="text-center" width="100">Ngày đi</th>
+              <th width="100">UNC</th>
+              <th style="width: 200px">Đón/Trả</th>
+              <th class="text-center" width="80">NL/TE/EB</th>  
+              <th class="text-right" width="100">Tổng tiền/Cọc</th>
+              <th class="text-right" width="100">CÒN LẠI</th>  
+              <th class="text-center" width="250">Đối tác</th>              
+              <th width="1%;white-space:nowrap">Thao tác</th>
+            </tr>
+            <tbody>
+            @if( $items->count() > 0 )
+              <?php $i = 0; ?>
+              @foreach( $items as $item )
+                <?php $i ++; ?>
+                 @php $arrEdit = array_merge(['id' => $item->id], $arrSearch) @endphp
+              <tr id="row-{{ $item->id }}" @if($item->driver_id == 0) style="background-color:#dee0e3" @endif>
+                <td style="text-align: center;"><span class="order">{{ $i }}<br>
+                  {{ date('d/m', strtotime($item->created_at)) }}
+                </span></td>                 
+                <td>      
+                  <strong style="color: red;font-size: 16px">PTX{{ $item->id }} 
+                  @if($item->status == 1)
+                  <span class="label label-info">MỚI</span>
+                  @elseif($item->status == 2)
+                  <span class="label label-default">HOÀN TẤT</span>
+                  @elseif($item->status == 3)
+                  <span class="label label-danger">HỦY</span>
+                  @endif </strong> 
+                  <br>
+                   <a style="font-size:17px" href="{{ route( 'booking-car-dn.edit', $arrEdit) }}">{{ $item->name }}</a> - <a href="tel:{{ $item->phone }}">{{ $item->phone }}</a></a>                  
+                  <br>
+                  @if(Auth::user()->role == 1)
+                    Sales:               
+                    @if($item->user)
+                    {{ $item->user->name }}
+                    @else
+                      {{ $item->user_id }}
+                    @endif                
+                  @endif     
+                  
+                </td>
+                <td class="text-center" style="white-space: nowrap;" >
+                  @if($item->status != 3)
+                  {{ date('d/m', strtotime($item->use_date)) }} - {{ $item->time_pickup }}
+                  <br>
+                  <strong style="color: blue">{{ $item->carCate->name }}</strong>
+                  @endif
+                </td> 
+                <td>
+                  @if($item->status != 3)
+                  @foreach($item->payment as $p)
+                  @if($p->type == 1)
+                  <img src="{{ Helper::showImageNew($p->image_url)}}" width="80" style="border: 1px solid red" class="img-unc" >
+                  @else
+                  <br>+ {{number_format($p->amount) }} lúc {{ date('d/m/Y', strtotime($p->created_at)) }}
+                  @endif
+                  @endforeach
+                  @endif
+                </td>
+               
+                <td>     
+                @if($item->status != 3)             
+                  @if($item->location)
+                  {{ $item->location->name }} [{{ $item->location_id }}] <br>
+
+                  {{ $item->location2->name }} [{{ $item->location_id_2 }}]                  
+                  @else
+                  {{ $item->address }}
+                  @endif
+                  
+                  <br>
+                  <span style="color:red">                   
+                    {{ $item->notes }}</span>
+                  @endif
+                </td>
+                 <td class="text-center">
+                  @if($item->status != 3)
+                  {{ $item->adults }} / {{ $item->childs }} / {{ $item->infants }}
+                  @endif
+                
+                </td>              
+                <td class="text-right">
+                  @if($item->status != 3)
+                  {{ number_format($item->total_price) }}/{{ number_format($item->tien_coc) }}
+                  @endif
+                </td>
+                <td class="text-right">
+                  @if($item->status != 3)
+                  {{ number_format($item->con_lai) }}                 
+                  @endif
+                </td>    
+                <td class="text-center" @if($item->driver_id == 0) style="background-color: #6ce8eb" @endif>     
+                @if($item->driver_id > 0)        
+                   <strong>{{ $item->driver->name }}</strong>
+                   @if($item->driver->phone)
+                   <br><i class="glyphicon glyphicon-phone"></i> <a href="tel:{{ $item->driver->phone }}">{{ $item->driver->phone }}</a>
+                   @endif
+
+                @else
+                <select class="form-control select2 change-column-value" data-id="{{ $item->id }}" data-column="driver_id">
+                  <option value="">--Chọn đối tác--</option>
+                  @foreach($driverList as $driver)
+                  <option value="{{ $driver->id }}">{{ $driver->name }} - {{ $driver->phone }}</option>
+                  @endforeach
+                </select>
+                @endif
+                  
+                </td>            
+                <td style="white-space:nowrap; position: relative;"> 
+                   <a class="btn btn-sm btn-success" title="Bill mua sắm/ăn uống" href="{{ route('booking-bill.index', ['id' => $item->id])}}&back_url={{ urlencode(Request::fullUrl()) }}"><i class="glyphicon glyphicon-list-alt"></i></a>
+                <a href="{{ route( 'booking-payment.index', ['booking_id' => $item->id] ) }}&back_url={{ urlencode(Request::fullUrl()) }}" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-usd"></span></a>          
+                  @php $arrEdit = array_merge(['id' => $item->id], $arrSearch) @endphp            
+                  <a href="{{ route( 'booking-car-dn.edit', $arrEdit ) }}&back_url={{ urlencode(Request::fullUrl()) }}" class="btn btn-warning btn-sm"><span class="glyphicon glyphicon-pencil"></span></a>                     
+                  @if(Auth::user()->role == 1 && $item->status == 1)
+                  <a onclick="return callDelete('PTX{{ $item->id }} - {{ $item->name }}','{{ route( 'booking-car-dn.destroy', [ 'id' => $item->id ]) }}');" class="btn btn-danger btn-sm"><span class="glyphicon glyphicon-trash"></span></a>
+                  @endif   
+                  @if(Auth::user()->role == 1 && $item->status == 1)
+                    <br><input id="hoan_tat_{{ $item->id }}" type="checkbox" name="" class="change_status_bk" value="2" data-id="{{ $item->id }}"> 
+                    <label for="hoan_tat_{{ $item->id }}">Hoàn tất</label>
+                    @endif              
+                  <p style="clear: both; text-align: right;font-size: 13px"><a target="_blank" href="{{ route('history.booking', ['id' => $item->id]) }}">Xem lịch sử</a></p>
+                </td>
+              </tr> 
+              @endforeach
+            @else
+            <tr>
+              <td colspan="9">Không có dữ liệu.</td>
+            </tr>
+            @endif
+
+          </tbody>
+          </table>
+          </div>
+          <div style="text-align:center">
+            {{ $items->appends( $arrSearch )->links() }}
+          </div>  
+        </div>        
+      </div>
+      <!-- /.box -->     
+    </div>
+    <!-- /.col -->  
+  </div> 
+</section>
+<!-- /.content -->
+</div>
+<div class="modal fade" id="uncModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content" style="text-align: center;">
+       <div class="modal-header">        
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <img src="" id="unc_img" style="width: 100%">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+      </div>
+    </div>
+  </div>
+</div>
+<input type="hidden" id="table_name" value="articles">
+@stop
+<style type="text/css">
+  label{
+    cursor: pointer;
+  }
+</style>
+@section('js')
+<script type="text/javascript">
+  $(document).ready(function(){
+    $('#searchForm input[type=checkbox]').change(function(){
+        $('#searchForm').submit();
+      });
+     $('#no_driver').change(function(){
+      $('#searchForm').submit();
+    });
+    $('img.img-unc').click(function(){
+      $('#unc_img').attr('src', $(this).attr('src'));
+      $('#uncModal').modal('show');
+    }); 
+  });
+</script>
+<script type="text/javascript">
+    $(document).ready(function(){
+      $('#btnExport').click(function(){
+        var oldAction = $('#searchForm').attr('action');
+        $('#searchForm').attr('action', "{{ route('export.cong-no-tour') }}").submit().attr('action', oldAction);
+      });
+      $('#temp').click(function(){
+        $(this).parents('form').submit();
+      });
+    	$('.change_status').click(function(){
+		      var obj = $(this);      
+		      $.ajax({
+		        url : "{{ route('change-export-status') }}",
+		        type : 'GET',
+		        data : {
+		          id : obj.data('id')
+		        },
+		        success: function(){
+		          window.location.reload();
+		        }
+		      });
+		    });
+       $('.change_status_bk').click(function(){
+          var obj = $(this);      
+          $.ajax({
+            url : "{{ route('change-status') }}",
+            type : 'GET',
+            data : {
+              id : obj.data('id')
+            },
+            success: function(){
+              //window.location.reload();
+            }
+          });
+        });
+       $('.change-column-value').change(function(){
+          var obj = $(this);      
+          $.ajax({
+            url : "{{ route('change-value-by-column') }}",
+            type : 'GET',
+            data : {
+              id : obj.data('id'),
+              col : obj.data('column'),
+              value: obj.val()
+            },
+            success: function(data){
+                console.log(data);
+            }
+          });
+       });
+      $('.hoa_hong_sales').blur(function(){
+        var obj = $(this);
+        $.ajax({
+          url:'{{ route('save-hoa-hong')}}',
+          type:'GET',
+          data: {
+            id : obj.data('id'),
+            hoa_hong_sales : obj.val()
+          },
+          success : function(doc){
+            
+          }
+        });
+        
+      });
+      $('.change_tien_thuc_thu').blur(function(){
+        var obj = $(this);
+        $.ajax({
+          url:'{{ route('change-value-by-column')}}',
+          type:'GET',
+          data: {
+            id : obj.data('id'),
+            value : obj.val(),
+            col : 'tien_thuc_thu'
+          },
+          success : function(doc){
+            console.log(data);
+          }
+        });
+        });
+    });
+  </script>
+@stop
