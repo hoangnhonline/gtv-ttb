@@ -9,7 +9,7 @@
     @if(Auth::check() && Auth::user()->beach_id == 7)
     <span class="logo-lg"><b>BÃI BÀNG CHILL</b></span>
     @else
-    <span class="logo-lg"><b>PHÚ QUỐC LUX</b></span>
+    <span class="logo-lg"><b>Giải Trí Việt</b></span>
     @endif
   </a>
   <!-- Header Navbar: style can be found in header.less -->
