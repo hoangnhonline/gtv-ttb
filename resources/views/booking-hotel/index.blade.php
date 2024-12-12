@@ -308,7 +308,7 @@
                   <br>
                   <span style="color:red">{{ $item->notes_hotel }}</span>
                   @if($item->notes)
-                  <br> <span style="color: #f39c12; font-style: italic">{{ $item->notes }}</span>
+                  <br> <span style="color: #FF4C00; font-style: italic">{{ $item->notes }}</span>
                   @endif
 
                 </td>

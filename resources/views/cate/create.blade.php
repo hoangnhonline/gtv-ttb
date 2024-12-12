@@ -80,10 +80,9 @@
                 <div class="form-group">
                   <label>Loại dịch vụ<span class="red-star">*</span></label>
                   <select name="type" id="type" class="form-control select2">
-                    <option value="1" {{ old('type') == 1 ? "selected" : "" }}>Dù bay</option>
-                    <option value="2" {{ old('type') == 2 ? "selected" : "" }}>Jetski</option>
-                    <option value="3" {{ old('type') == 3 ? "selected" : "" }}>Phao chuối</option>
-                    <option value="4" {{ old('type') == 4 ? "selected" : "" }}>Phao bay</option>
+                    @foreach($cateType as $cate)
+                    <option value="{{ $cate->id }}" {{ old('type', $cate->id) == $cate->id ? "selected" : "" }}>{{ $cate->name }}</option>
+                    @endforeach
                   </select>
                 </div>                      
             </div>                        

@@ -78,15 +78,7 @@
             </div>
              @endif
             @endif
-            @if($notNH)
-            <div class="form-group">
-                <select name="partner_id" class="form-control select2">
-                    <option value="" {{ !old('partner_id') ? "selected" : "" }}>-- Đối tác</option>
-                    @foreach($partners as $partner)
-                        <option value="{{ $partner->id }}" {{ $partner_id == $partner->id ? "selected" : "" }}>{{ $partner->name }}</option>
-                    @endforeach
-                </select>
-            </div>
+            @if($notNH)            
             <div class="form-group">
               <select name="cate_id" class="form-control select2">
                     <option value="">-Dịch vụ-</option>
@@ -95,14 +87,7 @@
                     @endforeach
               </select>
             </div>
-            <div class="form-group">
-              <select class="form-control select2" name="hdv_id" id="hdv_id">
-                <option value="">--HDV--</option>
-                @foreach($hdvList as $hdv)
-                <option value="{{ $hdv->id }}" {{ $arrSearch['hdv_id'] == $hdv->id ? "selected" : "" }}>{{ $hdv->name }}</option>
-                @endforeach
-              </select>
-            </div>
+            
             <div class="form-group">
               <select class="form-control select2" name="nguoi_thu_tien" id="nguoi_thu_tien">
                 <option value="">--Người thu tiền--</option>
@@ -110,15 +95,7 @@
                 <option value="{{ $payer->id }}" {{ $arrSearch['nguoi_thu_tien'] == $payer->id ? "selected" : "" }}>{{ $payer->name }}</option>
                 @endforeach
               </select>
-            </div> 
-            <div class="form-group">
-              <select class="form-control select2" name="nguoi_tu_van" id="nguoi_tu_van">
-                  <option value="">-Tư vấn-</option>
-                  @foreach($tuvanList as $ck)
-                        <option value="{{ $ck->id }}" {{ $arrSearch['nguoi_tu_van'] == $ck->id ? "selected" : "" }}>{{ $ck->name }}</option>
-                        @endforeach
-                </select>
-            </div>    
+            </div>             
             @endif        
             <button type="submit" class="btn btn-info btn-sm" style="margin-top: -5px">Lọc</button>
             <div class="form-group">
@@ -134,13 +111,8 @@
               @endforeach
             </div>
             @if($notNH)
-            <div>            
-              <div class="form-group">
-                  <label>
-                    <input type="checkbox" id="not_john" name="not_john" value="1" {{ $arrSearch['not_john'] == 1 ? "checked" : "" }}>
-                   Đối tác khác
-                  </label>
-              </div>
+            <div>           
+             
                <div class="form-group">
                       <label style="font-weight: bold; color: red">
                         <input type="checkbox" id="da_thu" name="da_thu" value="1" {{ $arrSearch['da_thu'] == 1 ? "checked" : "" }}>
@@ -173,12 +145,10 @@
                 <th class="text-center">Tổng BK</th>
                 <th class="text-right">Tổng tiền</th>                
                 <th class="text-right">Tiền flycam</th>
-                <th class="text-right">Tổng ko flycam</th>
-                <th class="text-right">CK John</th>
-                <th class="text-right">5% NV</th>
+                <th class="text-right">3% NV</th>
                 <th class="text-right">Tổng giảm</th>
                 <th class="text-right">Tổng cọc</th>
-                <th class="text-right">Tổng HH Cano</th>
+                <th class="text-right">Tổng HH</th>
                 <th class="text-right">Tổng chuyển khoản</th>
                 <th class="text-right">Chi tiền mặt</th>
                 <th class="text-right">Tổng tiền mặt</th>
@@ -190,20 +160,14 @@
                 </td>
                 <td class="text-right">
                   {{ number_format($arrData['tong_tien']) }}
-                </td>
-               
+                </td>               
                 <td class="text-right">
                   {{ number_format($arrData['tong_cam']) }}
-                </td>
-                <td class="text-right">
-                  {{ number_format($arrData['tong_tien_ko_cam_jt']) }}
-                </td>
-                <td class="text-right">
-                  {{ number_format($arrData['ck_john']) }}
-                </td>
+                </td>            
+              
                 
                 <?php
-              $ck_nv = $arrData['tong_tien_ko_cam_jt']*5/100;
+              $ck_nv = $arrData['tong_tien_ko_cam_jt']*3/100;
               ?>
                 <td class="text-right">
                   {{ number_format($ck_nv) }}

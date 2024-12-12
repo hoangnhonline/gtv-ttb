@@ -7,7 +7,7 @@
 
         <title>Phú Quốc Sea Sports - Hệ thống quản lý booking</title>
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="images/logo.jpg" />
+        <meta property="og:image" content="images/logo.png" />
         <meta name="robots" content="noindex" />
         <!-- Tell the browser to be responsive to screen width -->
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport" />

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Phú Quốc Sea Sports - Đăng nhập hệ thống</title>
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="images/logo.jpg" />
+    <meta property="og:image" content="images/logo.png" />
     <meta name="robots" content="noindex">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">    
     
@@ -45,10 +45,10 @@ body {
   font-size: 12px;
 }
 .pen-title span .fa {
-  color: #f39c12;
+  color: #FF4C00;
 }
 .pen-title span a {
-  color: #f39c12;
+  color: #FF4C00;
   font-weight: 600;
   text-decoration: none;
 }
@@ -59,7 +59,7 @@ body {
   background: #ffffff;
   max-width: 320px;
   width: 100%;
-  border-top: 5px solid #f39c12;
+  border-top: 5px solid #FF4C00;
   box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
   margin: 0 auto;
 }
@@ -68,7 +68,7 @@ body {
   position: absolute;
   top: -0;
   right: -0;
-  background: #f39c12;
+  background: #FF4C00;
   width: 30px;
   height: 30px;
   margin: -5px 0 0;
@@ -108,7 +108,7 @@ body {
 }
 .form-module h2 {
   margin: 0 0 20px;
-  color: #f39c12;
+  color: #FF4C00;
   font-size: 18px;
   font-weight: 400;
   line-height: 1;
@@ -126,12 +126,12 @@ body {
   transition: 0.3s ease;
 }
 .form-module input:focus {
-  border: 1px solid #f39c12;
+  border: 1px solid #FF4C00;
   color: #333333;
 }
 .form-module button {
   cursor: pointer;
-  background: #f39c12;
+  background: #FF4C00;
   width: 100%;
   border: 0;
   padding: 10px 15px;
@@ -140,7 +140,7 @@ body {
   transition: 0.3s ease;
 }
 .form-module button:hover {
-  background: #f39c12;
+  background: #FF4C00;
 }
 .form-module .cta {
   background: #f2f2f2;
@@ -169,7 +169,7 @@ body {
 <div class="module form-module"> 
   <div class="form">
   <div style="text-align: center">    
-    <img src="{{ asset('assets/images/logo.jpg') }}" width="200">
+    <img src="{{ asset('assets/images/logo.png') }}" width="200">
   </div>
     @if(Session::has('error'))
         <div class="alert alert-danger">

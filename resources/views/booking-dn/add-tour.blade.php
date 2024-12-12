@@ -5,7 +5,7 @@
   <!-- Content Header (Page header) -->
   <section class="content-header">
   <h1 style="text-transform: uppercase;">  
-      Đặt tour Đà Nẵng<span style="color:#f39c12">
+      Đặt tour Đà Nẵng<span style="color:#FF4C00">
         {{-- @if($tour_id == 4) CÂU MỰC @elseif($tour_id == 1) ĐẢO @elseif($tour_id == 3) RẠCH VẸM @endif --}}
     </span></h1>    
   </section>

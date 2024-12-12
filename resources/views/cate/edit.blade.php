@@ -47,18 +47,6 @@
                         Hiện app
                       </label>
                   </div>
-                  <div class="form-group col-xs-4">
-                      <label style="font-weight: bold">
-                        <input type="checkbox" id="hon_son" name="hon_son" value="1" {{ old('hon_son', $detail->hon_son) == 1 ? "checked" : "" }}>
-                        Hòn Sơn
-                      </label>
-                  </div>
-                  <div class="form-group col-xs-4">
-                      <label style="font-weight: bold">
-                        <input type="checkbox" id="chup_anh" name="chup_anh" value="1" {{ old('chup_anh', $detail->chup_anh) == 1 ? "checked" : "" }}>
-                        Chụp ảnh
-                      </label>
-                  </div>
               </div>
                  <!-- text input -->
                 <div class="form-group">
@@ -80,10 +68,9 @@
                 <div class="form-group">
                   <label>Loại dịch vụ<span class="red-star">*</span></label>
                   <select name="type" id="type" class="form-control">
-                    <option value="1" {{ old('type', $detail->type) == 1 ? "selected" : "" }}>Dù bay</option>
-                    <option value="2" {{ old('type', $detail->type) == 2 ? "selected" : "" }}>Jetski</option>
-                    <option value="3" {{ old('type', $detail->type) == 3 ? "selected" : "" }}>Phao chuối</option>
-                    <option value="4" {{ old('type', $detail->type) == 4 ? "selected" : "" }}>Phao bay</option>
+                    @foreach($cateType as $cate)
+                    <option value="{{ $cate->id }}" {{ old('type', $detail->type) == $cate->id ? "selected" : "" }}>{{ $cate->name }}</option>
+                    @endforeach
                   </select>
                 </div>                      
             </div>                        

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Models\Cate;
+use App\Models\CateType;
 use App\Models\WArticlesCate;
 use Helper, File, Session, Auth;
 
@@ -52,8 +53,8 @@ class CateController extends Controller
     */
     public function create(Request $request)
     {
-        
-        return view('cate.create');
+        $cateType = CateType::all();
+        return view('cate.create', compact('cateType'));
     }
 
     /**
@@ -106,7 +107,8 @@ class CateController extends Controller
     public function edit($id)
     {
         $detail = Cate::find($id);
-        return view('cate.edit', compact( 'detail'));
+        $cateType = CateType::all();
+        return view('cate.edit', compact( 'detail', 'cateType'));
     }
 
     /**
